@@ -70,12 +70,67 @@ app.get('/transactions', authMiddleware, (req, res) => {
   })
 });
 
+//add investment
+app.post('/portfolio', authMiddleware, (req, res) => {
+  const { name, type, current_value, purchase_price } = req.body;
+  db.run(
+    'INSERT INTO portfolios (user_id, name, type, current_value, purchase_price) VALUES (?, ?, ?, ?, ?)',
+    [req.userId, name, type, current_value, purchase_price], (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'DB error' });
+      }
+      res.json({ message: 'Investment added' });
+    });
+});
+
+// edit investment
+app.get('/portfolio/:id', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  db.get('SELECT * FROM portfolios WHERE id = ? AND user_id = ?', [id, req.userId], (err, row) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'DB error' });
+    }
+    if (!row) return res.status(404).json({ error: 'Investment not found' });
+    res.json(row);
+  });
+});
+
+app.put('/portfolio/:id', authMiddleware, (req, res) => {
+  const { name, type, current_value, purchase_price } = req.body;
+  db.run(
+    'UPDATE portfolios SET name = ?, type = ?, current_value = ?, purchase_price = ? WHERE id = ? AND user_id = ?',
+    [name, type, current_value, purchase_price, req.params.id, req.userId], (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'DB error' });
+      }
+      res.json({ message: 'Investment updated' });
+    }
+  );
+});
+
+app.post('/transactions', authMiddleware, (req, res) => {
+  const { asset_name, type, quantity, price } = req.body;
+  const date = new Date().toISOString();
+  db.run(
+    'INSERT INTO transactions (user_id, asset_name, type, quantity, price, date) VALUES (?, ?, ?, ?, ?, ?)',
+    [req.userId, asset_name, type, quantity, price, date], (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'DB error' });
+      }
+      res.json({ message: 'Transaction added' });
+    }
+  );
+});
+
 app.listen(5000, () => console.log('Server on port 5000'));
+
 const db = new sqlite3.Database('./portfolio.db', (err) => {
     if (err)
         console.error(err);
     console.log('Connected to SQLite');
 });
+
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password_hash TEXT)`);
   db.run(`CREATE TABLE IF NOT EXISTS portfolios (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, name TEXT, type TEXT, current_value REAL, purchase_price REAL)`);

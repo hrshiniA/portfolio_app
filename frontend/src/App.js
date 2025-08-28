@@ -7,10 +7,6 @@ import Transactions from './Transactions';
 import AddEditInvestment from './AddEditInvestment';
 
 function App() {
-  return <div>Hello from Front-end</div>;
-}
-
-function App() {
   // eslint-disable-next-line no-unused-vars
   const [token, setToken] = useState(localStorage.getItem('token'));
 

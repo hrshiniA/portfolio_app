@@ -32,6 +32,7 @@ function Dashboard() {
       <nav>
         <Link to="/transactions">View Transaction History</Link>
       </nav>
+      <button onClick={() => navigate('/add-investment')}>Add Investment</button>
       <table>
         <thead>
           <tr>
@@ -51,6 +52,9 @@ function Dashboard() {
               <td>{item.current_value}</td>
               <td>{item.purchase_price}</td>
               <td>{(((item.current_value - item.purchase_price) / item.purchase_price) * 100).toFixed(2)}</td>
+              <td>
+                <button onClick={() => navigate(`/edit-investment/${item.id}`)}>Edit</button>
+              </td>
             </tr>
           ))}
         </tbody>
