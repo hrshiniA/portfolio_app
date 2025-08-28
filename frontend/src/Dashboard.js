@@ -28,6 +28,10 @@ function Dashboard() {
   return (
     <div>
       <h1>Portfolio Overview</h1>
+      <button onClick={handleLogout}>Logout</button>
+      <nav>
+        <Link to="/transactions">View Transaction History</Link>
+      </nav>
       <table>
         <thead>
           <tr>

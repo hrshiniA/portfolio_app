@@ -59,6 +59,17 @@ app.get('/portfolio', authMiddleware, (req, res) => {
     res.json(rows);
   });
 });
+
+app.get('/transactions', authMiddleware, (req, res) => {
+
+  db.all('SELECT * FROM transactions WHERE user_id = ?', [req.userId], (err, rows) => {
+    if (err){
+      return res.status(500).json({error: 'DB error'});
+    }
+    res.json(rows);
+  })
+});
+
 app.listen(5000, () => console.log('Server on port 5000'));
 const db = new sqlite3.Database('./portfolio.db', (err) => {
     if (err)
