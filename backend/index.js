@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' })); 
 
 app.get('/', (req, res) => res.send('Backend running'));
+
 // Middleware for protected routes
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -23,6 +24,7 @@ const authMiddleware = (req, res, next) => {
     next();
   });
 };
+
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   const hash = await bcrypt.hash(password, 10);
@@ -35,6 +37,7 @@ app.post('/register', async (req, res) => {
     res.json({ message: 'User registered' });
   });
 });
+
 app.post('/login', (req, res) => {
     const {username, password} = req.body;
 
@@ -45,6 +48,16 @@ app.post('/login', (req, res) => {
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     });
+});
+
+app.get('/portfolio', authMiddleware, (req, res) => {
+  db.all('SELECT * FROM portfolios WHERE user_id = ?', [req.userId], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'DB error' });
+    }
+    res.json(rows);
+  });
 });
 app.listen(5000, () => console.log('Server on port 5000'));
 const db = new sqlite3.Database('./portfolio.db', (err) => {
