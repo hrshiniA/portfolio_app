@@ -27,7 +27,6 @@ Before setting up the project, ensure you have the following installed:
 **Step 1: Clone the Repository**
 ```
 git clone https://github.com/hrshiniA/portfolio_app.git
-cd portfolio_management_dashboard
 ```
 
 **Step 2: Set Up Environment Variables**
