@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 app.use(express.json());
-
 app.use(cors({ origin: 'http://localhost:3000' })); 
 
 app.get('/', (req, res) => res.send('Backend running'));
@@ -25,6 +24,7 @@ const authMiddleware = (req, res, next) => {
   });
 };
 
+// Register endpoint for User Sign In
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   const hash = await bcrypt.hash(password, 10);
@@ -38,6 +38,7 @@ app.post('/register', async (req, res) => {
   });
 });
 
+// Login endpoint for User with existing account
 app.post('/login', (req, res) => {
     const {username, password} = req.body;
 
@@ -50,6 +51,7 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Get portfolio for logged-in user
 app.get('/portfolio', authMiddleware, (req, res) => {
   db.all('SELECT * FROM portfolios WHERE user_id = ?', [req.userId], (err, rows) => {
     if (err) {
@@ -60,8 +62,8 @@ app.get('/portfolio', authMiddleware, (req, res) => {
   });
 });
 
+// Get all transactions for logged-in user
 app.get('/transactions', authMiddleware, (req, res) => {
-
   db.all('SELECT * FROM transactions WHERE user_id = ?', [req.userId], (err, rows) => {
     if (err){
       return res.status(500).json({error: 'DB error'});
@@ -96,6 +98,7 @@ app.get('/portfolio/:id', authMiddleware, (req, res) => {
   });
 });
 
+// Update investment
 app.put('/portfolio/:id', authMiddleware, (req, res) => {
   const { name, type, current_value, purchase_price } = req.body;
   db.run(
@@ -109,6 +112,7 @@ app.put('/portfolio/:id', authMiddleware, (req, res) => {
   );
 });
 
+// Add transaction
 app.post('/transactions', authMiddleware, (req, res) => {
   const { asset_name, type, quantity, price } = req.body;
   const date = new Date().toISOString();
@@ -123,14 +127,14 @@ app.post('/transactions', authMiddleware, (req, res) => {
   );
 });
 
-app.listen(5000, () => console.log('Server on port 5000'));
-
+//  SQLite Database connection
 const db = new sqlite3.Database('./portfolio.db', (err) => {
     if (err)
         console.error(err);
     console.log('Connected to SQLite');
 });
 
+// Initialize database tables users, portfolios and transactions
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password_hash TEXT)`);
   db.run(`CREATE TABLE IF NOT EXISTS portfolios (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, name TEXT, type TEXT, current_value REAL, purchase_price REAL)`);
