@@ -30,7 +30,7 @@ git clone https://github.com/hrshiniA/portfolio_app.git
 ```
 
 **Step 2: Set Up Environment Variables**
-- Create a `.env` file in the backend directory of the project.
+- Create a `.env` file in the backend directory of the project (refer to the .env.example file).
 - Add the following line with a secure, unique secret key:
   ```
   JWT_SECRET="your-secure-secret-key"
@@ -48,6 +48,12 @@ git clone https://github.com/hrshiniA/portfolio_app.git
 
 2. Verify the application is running:
 - Open `http://localhost:3000/` in your browser. The login page should load.
+
+**3. Sign in/Log in**
+- You can navigate to the `SignIn` page to create your own account and login.
+- Or you can `LogIn` using the following credentials.
+  - Username: Manulife
+  - Password: portfolio_dashboard
 
 **Step 4: Stop the Containers**
 - To stop the application, press `Ctrl+C` in the terminal.
