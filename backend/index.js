@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' })); 
 
-app.get('/', (req, res) => res.send('Backend running'));
+app.get('/', (_req, res) => res.send('Backend running'));
 
 // Middleware for protected routes
 const authMiddleware = (req, res, next) => {
@@ -127,11 +127,15 @@ app.post('/transactions', authMiddleware, (req, res) => {
   );
 });
 
-//  SQLite Database connection
+app.listen(5000, () => console.log('Server on port 5000'));
+
+
 const db = new sqlite3.Database('./portfolio.db', (err) => {
-    if (err)
-        console.error(err);
-    console.log('Connected to SQLite');
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Connected to SQLite');
+    }
 });
 
 // Initialize database tables users, portfolios and transactions
