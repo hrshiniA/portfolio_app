@@ -33,7 +33,7 @@ git clone https://github.com/hrshiniA/portfolio_app.git
 - Create a `.env` file in the backend directory of the project.
 - Add the following line with a secure, unique secret key:
   ```
-  JWT_SECRET=your-secure-secret-key
+  JWT_SECRET="your-secure-secret-key"
   ```
   - Replace `your-secure-secret-key` with a random string
 
